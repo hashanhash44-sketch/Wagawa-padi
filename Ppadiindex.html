@@ -1,0 +1,347 @@
+
+<div id="wpApp">
+<style>
+#wpApp{max-width:1000px;margin:auto;padding:12px;background:#f1f7f1;color:#203027;font:19px/1.6 Arial,sans-serif;border-radius:14px}
+#wpApp *{box-sizing:border-box}
+#wpApp h2{font-size:30px;line-height:1.4}
+#wpApp h3{font-size:24px;color:#17643b}
+#wpApp label{display:block;font-weight:bold;font-size:19px;margin-top:10px}
+#wpApp input,#wpApp select,#wpApp textarea{display:block;width:100%;min-height:58px;padding:13px;margin:7px 0 15px;border:2px solid #d1ddd2;border-radius:10px;background:white;font-size:20px;color:#203027}
+#wpApp textarea{min-height:90px}
+#wpApp button{min-height:58px;padding:12px 14px;margin:5px 2px;border:0;border-radius:10px;background:#17643b;color:white;font-size:18px;font-weight:bold;cursor:pointer}
+#wpApp .alt{background:#42566b}
+#wpApp .red{background:#b52b2b}
+#wpApp .card{background:white;border:1px solid #dce6dc;border-radius:12px;padding:14px;margin:12px 0}
+#wpApp .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#wpApp .tabs button{width:100%;margin:0;min-height:70px;padding:9px 5px}
+#wpApp .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#wpApp .stat{background:#e6f3e7;padding:12px;border-radius:10px;font-size:16px;overflow-wrap:anywhere}
+#wpApp .stat strong{display:block;font-size:21px;margin-top:5px}
+#wpApp .muted{font-size:15px;color:#59695d}
+#wpApp .tbl{overflow-x:auto;width:100%}
+#wpApp table{width:100%;border-collapse:collapse;font-size:15px}
+#wpApp th,#wpApp td{padding:10px;border-bottom:1px solid #ddd;text-align:left;white-space:nowrap}
+#wpApp th{background:#eaf3e9}
+#wpApp .hide{display:none}
+@media(min-width:650px){#wpApp .stats{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:380px){#wpApp{padding:7px;font-size:18px}#wpApp h2{font-size:26px}#wpApp h3{font-size:21px}#wpApp button{font-size:16px}#wpApp .stat strong{font-size:18px}}
+</style>
+
+<div class="card" style="background:#17643b;color:white;text-align:center">
+<h2 style="color:white;margin:5px">🌾 Watte Padi App</h2>
+<div>ගොවිපළ සේවක පඩි කළමනාකරණය</div>
+<div style="font-size:16px">📧 buddhikairoshana83@gmail.com</div>
+</div>
+
+<div class="stats">
+<div class="stat">මුළු පඩි මුදල<strong id="wpTotal">රු. 0.00</strong></div>
+<div class="stat">අත්තිකාරම්<strong id="wpAdvTotal">රු. 0.00</strong></div>
+<div class="stat">ගෙවා ඇති මුදල<strong id="wpPaidTotal">රු. 0.00</strong></div>
+<div class="stat">ගෙවීමට ඉතිරි<strong id="wpDueTotal">රු. 0.00</strong></div>
+</div>
+
+<div class="card tabs">
+<button onclick="wpTab('entry')">➕ පඩි ඇතුළත් කරන්න</button>
+<button onclick="wpTab('summary')">📊 මාසික වාර්තාව</button>
+<button onclick="wpTab('history')">📋 පඩි සටහන්</button>
+<button onclick="wpTab('backup')">📧 Backup / Email</button>
+</div>
+
+<section id="wp-entry" class="card">
+<h3 id="wpFormTitle">📝 අලුත් පඩි සටහන</h3>
+<form id="wpForm">
+<input type="hidden" id="wpId">
+
+<label>සේවකයා</label>
+<select id="wpWorker">
+<option>MOHAN</option>
+<option>LOKU</option>
+<option>SUSANTHA</option>
+</select>
+
+<label>වැඩ කළ දිනය</label>
+<input type="date" id="wpDate" required>
+
+<label>වැඩ කළ දින ගණන</label>
+<input type="number" id="wpDays" min="0.5" step="0.5" value="1" required>
+
+<label>දිනක පඩිය (රු.)</label>
+<input type="number" id="wpRate" min="0" step="0.01" value="2500" required>
+
+<label>අමතර මුදල (රු.)</label>
+<input type="number" id="wpExtra" min="0" step="0.01" value="0">
+
+<label>අත්තිකාරම් මුදල (රු.)</label>
+<input type="number" id="wpAdvance" min="0" step="0.01" value="0">
+
+<label>දැනට ගෙවූ පඩිය (රු.)</label>
+<input type="number" id="wpPaid" min="0" step="0.01" value="0">
+
+<label>වැඩ පිළිබඳ සටහන</label>
+<textarea id="wpNote" placeholder="උදා: පේර කැඩීම, පොහොර දැමීම"></textarea>
+
+<div class="stat">
+වැඩ පඩිය<strong id="wpGrossPreview">රු. 2,500.00</strong>
+අත්තිකාරම් අඩු කළ පසු<strong id="wpNetPreview">රු. 2,500.00</strong>
+ඉතිරි පඩිය<strong id="wpDuePreview">රු. 2,500.00</strong>
+</div>
+
+<button type="submit" id="wpSaveBtn">💾 සටහන සුරකින්න</button>
+<button type="button" class="alt" onclick="wpReset()">අලුත් සටහනක්</button>
+</form>
+</section>
+
+<section id="wp-summary" class="card hide">
+<h3>📊 මාසික පඩි වාර්තාව</h3>
+<label>මාසය තෝරන්න</label>
+<input type="month" id="wpMonth">
+<button onclick="wpSummary()">වාර්තාව පෙන්වන්න</button>
+<div id="wpSummaryOutput"></div>
+</section>
+
+<section id="wp-history" class="card hide">
+<h3>📋 පඩි සටහන් / සංස්කරණය</h3>
+<label>සේවකයා තෝරන්න</label>
+<select id="wpFilterWorker">
+<option value="">සියලු සේවකයන්</option>
+<option>MOHAN</option>
+<option>LOKU</option>
+<option>SUSANTHA</option>
+</select>
+<label>මාසය තෝරන්න</label>
+<input type="month" id="wpFilterMonth">
+<button onclick="wpHistory()">සොයන්න</button>
+<button class="alt" onclick="wpClearFilters()">සියලු සටහන්</button>
+<div id="wpHistoryOutput"></div>
+</section>
+
+<section id="wp-backup" class="card hide">
+<h3>📧 Backup Email කරන්න</h3>
+<label>Email ලිපිනය</label>
+<input type="email" id="wpEmail" value="buddhikairoshana83@gmail.com">
+<button onclick="wpEmailBackup()">📧 Email සකස් කරන්න</button>
+<button class="alt" onclick="wpDownload()">⬇️ Backup බාගත කරන්න</button>
+
+<hr>
+<h3>📥 Backup එකෙන් දත්ත නැවත ලබාගන්න</h3>
+<input type="file" id="wpRestoreFile" accept=".json,application/json">
+<button onclick="wpRestore()">Backup Restore කරන්න</button>
+
+<hr>
+<h3>📄 CSV වාර්තාව</h3>
+<button class="alt" onclick="wpCSV()">CSV බාගත කරන්න</button>
+
+<hr>
+<button class="red" onclick="wpDeleteAll()">සියලු සටහන් මකන්න</button>
+<p class="muted">⚠️ දත්ත මෙම browser එකේ පමණක් ගබඩා වේ. Browser data මකා දැමීමට පෙර Backup එකක් ගන්න. Email යැවීමේදී Backup ගොනුව Gmail එකට අතින් Attach කරන්න.</p>
+</section>
+
+<div class="card muted">Watte Padi App · ගොවිපළ සේවක පඩි වාර්තා</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var KEY="wattePadiRecordsV1";
+var EMAIL="buddhikairoshana83@gmail.com";
+function $(id){return document.getElementById(id);}
+function load(){
+try{
+var x=JSON.parse(localStorage.getItem(KEY)||"[]");
+return Array.isArray(x)?x:[];
+}catch(e){return [];}
+}
+var data=load();
+function money(n){
+return "රු. "+(Number(n)||0).toLocaleString("en-LK",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function esc(v){
+return String(v==null?"":v).replace(/[&<>"']/g,function(c){
+return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+});
+}
+function num(id){return Math.max(0,Number($(id).value)||0);}
+function calc(r){
+var gross=(Number(r.days)||0)*(Number(r.rate)||0)+(Number(r.extra)||0);
+var net=Math.max(0,gross-(Number(r.advance)||0));
+return {gross:gross,net:net,due:Math.max(0,net-(Number(r.paid)||0))};
+}
+function formRecord(){
+return {worker:$("wpWorker").value,date:$("wpDate").value,days:num("wpDays"),rate:num("wpRate"),extra:num("wpExtra"),advance:num("wpAdvance"),paid:num("wpPaid"),note:$("wpNote").value.trim()};
+}
+function preview(){
+var c=calc(formRecord());
+$("wpGrossPreview").textContent=money(c.gross);
+$("wpNetPreview").textContent=money(c.net);
+$("wpDuePreview").textContent=money(c.due);
+}
+["wpDays","wpRate","wpExtra","wpAdvance","wpPaid"].forEach(function(id){
+$(id).addEventListener("input",preview);
+});
+function save(){
+try{
+localStorage.setItem(KEY,JSON.stringify(data));
+render();
+}catch(e){alert("දත්ත සුරැකීමට නොහැකි වුණා. Backup එකක් ගන්න.");}
+}
+$("wpForm").addEventListener("submit",function(e){
+e.preventDefault();
+var r=formRecord();
+if(!r.date){alert("දිනය තෝරන්න.");return;}
+if(r.days<=0){alert("වැඩ කළ දින ගණන ඇතුළත් කරන්න.");return;}
+var id=$("wpId").value;
+if(id){
+var i=data.findIndex(function(x){return String(x.id)===id;});
+if(i>=0)data[i]=Object.assign({},r,{id:id});
+}else{
+r.id=String(Date.now())+String(Math.floor(Math.random()*100000));
+data.push(r);
+}
+save();
+wpReset();
+alert("සටහන සුරැකුණා.");
+});
+window.wpTab=function(tab){
+["entry","summary","history","backup"].forEach(function(n){
+$("wp-"+n).classList.toggle("hide",n!==tab);
+});
+if(tab==="summary")wpSummary();
+if(tab==="history")wpHistory();
+};
+window.wpReset=function(){
+$("wpForm").reset();
+$("wpId").value="";
+$("wpDate").value=new Date().toLocaleDateString("en-CA");
+$("wpDays").value="1";
+$("wpRate").value="2500";
+$("wpExtra").value="0";
+$("wpAdvance").value="0";
+$("wpPaid").value="0";
+$("wpFormTitle").textContent="📝 අලුත් පඩි සටහන";
+$("wpSaveBtn").textContent="💾 සටහන සුරකින්න";
+preview();
+};
+function totals(list){
+return list.reduce(function(a,r){
+var c=calc(r);
+a.days+=Number(r.days)||0;
+a.gross+=c.gross;
+a.advance+=Number(r.advance)||0;
+a.paid+=Number(r.paid)||0;
+a.due+=c.due;
+return a;
+},{days:0,gross:0,advance:0,paid:0,due:0});
+}
+function render(){
+var t=totals(data);
+$("wpTotal").textContent=money(t.gross);
+$("wpAdvTotal").textContent=money(t.advance);
+$("wpPaidTotal").textContent=money(t.paid);
+$("wpDueTotal").textContent=money(t.due);
+wpSummary();
+wpHistory();
+}
+window.wpSummary=function(){
+var month=$("wpMonth").value;
+var html='<div class="tbl"><table><thead><tr><th>සේවකයා</th><th>දින</th><th>මුළු පඩිය</th><th>අත්තිකාරම්</th><th>ගෙවූ</th><th>ඉතිරි</th></tr></thead><tbody>';
+["MOHAN","LOKU","SUSANTHA"].forEach(function(w){
+var t=totals(data.filter(function(r){return r.worker===w&&(!month||r.date.slice(0,7)===month);}));
+html+="<tr><td>"+w+"</td><td>"+t.days+"</td><td>"+money(t.gross)+"</td><td>"+money(t.advance)+"</td><td>"+money(t.paid)+"</td><td>"+money(t.due)+"</td></tr>";
+});
+var all=totals(data.filter(function(r){return !month||r.date.slice(0,7)===month;}));
+html+="<tr><th>එකතුව</th><th>"+all.days+"</th><th>"+money(all.gross)+"</th><th>"+money(all.advance)+"</th><th>"+money(all.paid)+"</th><th>"+money(all.due)+"</th></tr>";
+$("wpSummaryOutput").innerHTML=html+"</tbody></table></div>";
+};
+window.wpHistory=function(){
+var w=$("wpFilterWorker").value,m=$("wpFilterMonth").value;
+var list=data.filter(function(r){return (!w||r.worker===w)&&(!m||r.date.slice(0,7)===m);}).sort(function(a,b){return b.date.localeCompare(a.date);});
+if(!list.length){$("wpHistoryOutput").innerHTML="<p>සටහන් හමු වුණේ නැහැ.</p>";return;}
+var html='<div class="tbl"><table><thead><tr><th>දිනය</th><th>සේවකයා</th><th>දින</th><th>පඩිය</th><th>අත්තිකාරම්</th><th>ගෙවූ</th><th>ඉතිරි</th><th>ක්‍රියා</th></tr></thead><tbody>';
+list.forEach(function(r){
+var c=calc(r);
+html+="<tr><td>"+esc(r.date)+"</td><td>"+esc(r.worker)+"</td><td>"+r.days+"</td><td>"+money(c.gross)+"</td><td>"+money(r.advance)+"</td><td>"+money(r.paid)+"</td><td>"+money(c.due)+"</td><td><button onclick=\"wpEdit('"+esc(r.id)+"')\">Edit</button><button class=\"red\" onclick=\"wpDelete('"+esc(r.id)+"')\">මකන්න</button></td></tr>";
+if(r.note)html+='<tr><td colspan="8">සටහන: '+esc(r.note)+'</td></tr>';
+});
+$("wpHistoryOutput").innerHTML=html+"</tbody></table></div>";
+};
+window.wpEdit=function(id){
+var r=data.find(function(x){return String(x.id)===String(id);});
+if(!r)return;
+$("wpId").value=r.id;
+$("wpWorker").value=r.worker;
+$("wpDate").value=r.date;
+$("wpDays").value=r.days;
+$("wpRate").value=r.rate;
+$("wpExtra").value=r.extra||0;
+$("wpAdvance").value=r.advance||0;
+$("wpPaid").value=r.paid||0;
+$("wpNote").value=r.note||"";
+$("wpFormTitle").textContent="✏️ සටහන සංස්කරණය කරන්න";
+$("wpSaveBtn").textContent="වෙනස්කම් සුරකින්න";
+wpTab("entry");preview();
+};
+window.wpDelete=function(id){
+if(!confirm("මෙම සටහන මකන්නද?"))return;
+data=data.filter(function(r){return String(r.id)!==String(id);});
+save();
+};
+window.wpClearFilters=function(){
+$("wpFilterWorker").value="";
+$("wpFilterMonth").value="";
+wpHistory();
+};
+function downloadFile(name,content,type){
+var blob=new Blob([content],{type:type});
+var url=URL.createObjectURL(blob);
+var a=document.createElement("a");
+a.href=url;a.download=name;
+document.body.appendChild(a);a.click();a.remove();
+setTimeout(function(){URL.revokeObjectURL(url);},1500);
+}
+window.wpDownload=function(){
+downloadFile("Watte_Padi_Backup.json",JSON.stringify({app:"Watte Padi App",version:1,exportedAt:new Date().toISOString(),records:data},null,2),"application/json");
+};
+window.wpEmailBackup=function(){
+var email=$("wpEmail").value.trim();
+if(!email||!email.includes("@")){alert("නිවැරදි Email ලිපිනයක් ඇතුළත් කරන්න.");return;}
+wpDownload();
+var subject=encodeURIComponent("Watte Padi App Backup");
+var body=encodeURIComponent("Watte Padi App Backup ගොනුව බාගත කර ඇත. Gmail එකේදී Watte_Padi_Backup.json ගොනුව attach කර Send කරන්න.");
+setTimeout(function(){window.location.href="mailto:"+encodeURIComponent(email)+"?subject="+subject+"&body="+body;},500);
+};
+window.wpRestore=function(){
+var file=$("wpRestoreFile").files[0];
+if(!file){alert("Backup JSON ගොනුව තෝරන්න.");return;}
+var reader=new FileReader();
+reader.onload=function(){
+try{
+var obj=JSON.parse(reader.result);
+var incoming=Array.isArray(obj)?obj:obj.records;
+if(!Array.isArray(incoming))throw new Error();
+var valid=incoming.every(function(r){return r&&r.id!=null&&r.date&&["MOHAN","LOKU","SUSANTHA"].includes(r.worker);});
+if(!valid)throw new Error();
+if(!confirm("දැනට ඇති සටහන් වෙනුවට Backup සටහන් ඇතුළත් කරන්නද?"))return;
+data=incoming;save();alert("Backup Restore වුණා.");
+}catch(e){alert("මෙය වලංගු Watte Padi Backup ගොනුවක් නොවේ.");}
+};
+reader.readAsText(file);
+};
+window.wpCSV=function(){
+function csv(v){return '"'+String(v==null?"":v).replace(/"/g,'""')+'"';}
+var rows=[["Date","Worker","Work Days","Daily Rate","Extra","Gross Wages","Advance","Paid","Balance Due","Note"]];
+data.forEach(function(r){var c=calc(r);rows.push([r.date,r.worker,r.days,r.rate,r.extra,c.gross,r.advance,r.paid,c.due,r.note||""]);});
+downloadFile("Watte_Padi_Report.csv","\uFEFF"+rows.map(function(r){return r.map(csv).join(",");}).join("\r\n"),"text/csv;charset=utf-8");
+};
+window.wpDeleteAll=function(){
+if(!confirm("සියලු සටහන් මකන්නද? මුලින් Backup එකක් ගන්න."))return;
+data=[];save();alert("සියලු සටහන් මකා දැමුවා.");
+};
+$("wpDate").value=new Date().toLocaleDateString("en-CA");
+$("wpEmail").value=EMAIL;
+var now=new Date(),m=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
+$("wpMonth").value=m;$("wpFilterMonth").value=m;
+preview();render();
+})();
+</script>
+```
+
